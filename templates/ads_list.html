@@ -36,6 +36,9 @@
                   <p>город / районный центр</p>
                   <div class="form-group">
                     <select name="oblast_district" class="form-control">
+                      {% if oblast_district %}
+                        <option selected value="{{ oblast_district }}">{{ oblast_district }}</option>
+                      {% endif %}
                       <option value="Череповецкий район">Череповец</option>
                       <option value="Шекснинский район">Шексна</option>
                       <option value="Вологодский район">Вологда</option>
@@ -94,7 +97,7 @@
                   <div class="form-group ">
                     <div class="checkbox">
                       <label>
-                        <input type="checkbox" name="new_building" value="True">
+                        <input type="checkbox" name="new_building" {% if new_building %}checked="checked" {% endif %} value="True" >
                         только новостройки
                       </label>
                     </div>
@@ -103,14 +106,14 @@
                   <div class="form-group ">
                     <div class="input-group">
                       <span class="input-group-addon">от</span>
-                      <input autocomplete="off" type="text" value="" name="min_price" class="form-control js-price-format" placeholder="любая">
+                      <input autocomplete="off" type="text" value="{% if min_price != 0 %}{{ min_price }}{% endif %}" name="min_price" class="form-control js-price-format" placeholder="любая">
                       <span class="input-group-addon">р.</span>
                     </div>
                   </div>
                   <div class="form-group ">
                     <div class="input-group">
                       <span class="input-group-addon">до</span>
-                      <input autocomplete="off" type="text" value="" name="max_price" class="form-control js-price-format" placeholder="любая">
+                      <input autocomplete="off" type="text" value="{% if max_price != 0 %}{{ max_price }}{% endif %}" name="max_price" class="form-control js-price-format" placeholder="любая">
                       <span class="input-group-addon">р.</span>
                     </div>
                   </div>
@@ -120,7 +123,7 @@
             </div>
             <div class="col-sm-8">
               <div class="panel panel-default">
-                {% for ad in ads %}
+                {% for ad in ads.items %}
                   <div class="panel-body">
                     <div class="row">
                       <div class="col-sm-12">
@@ -150,18 +153,46 @@
                   </div>
                   <hr>
                 {% endfor %}
-                <div class="panel-body">
-                  <div class="clearfix">
-                    <ul class="pagination pull-right">
-                      <li class="disabled"><span>«</span></li>
-                      <li class="active"><span>1 <span class="sr-only">(current)</span></span></li>
-                      <li><a href="?page=2" role="next">2</a></li>
-                      <li><a href="?page=3" role="next">3</a></li>
-                      <li><a href="?page=4" role="next">4</a></li>
-                      <li><a href="?page=2" role="next">»</a></li>
+              {% if ads.pages > 1 %}
+                <div class="row">
+                  <div class="col-md-12">
+                    <ul class="pagination">
+                      <!-- первая странца -->
+                      {% if ads.page == 1 %}
+                        <li class="disabled"><span>В начало</span></li>
+                      {% else %}
+                        <li><a href="{{ url_for(request.endpoint, oblast_district=oblast_district, min_price=min_price, max_price=max_price, new_building=new_building) }}">В начало</a></li>
+                      {% endif  %}
+                      <!-- предыдущая страница -->
+                      {% if ads.has_prev %}
+                        <li><a href="{{ url_for(request.endpoint, oblast_district=oblast_district, min_price=min_price, max_price=max_price, new_building=new_building, page=ads.prev_num) }}"><< Туда</a></li>
+                      {% else %}
+                        <li class="disabled"><span><< Туда</span></li>
+                      {% endif  %}
+                      <!-- страницы по порядку -->
+                      {% for p in range(1, ads.pages + 1) %}
+                          {% if p == ads.page %}
+                            <li class="active"><span>{{ p }}</span></li>
+                          {% else %}
+                            <li><a href="{{ url_for(request.endpoint, oblast_district=oblast_district, min_price=min_price, max_price=max_price, new_building=new_building, page=p) }}">{{ p }}</a></li>
+                          {% endif %}
+                      {% endfor %}
+                      <!-- следующая страница -->
+                      {% if ads.has_next %}
+                        <li><a href="{{ url_for(request.endpoint, oblast_district=oblast_district, min_price=min_price, max_price=max_price, new_building=new_building, page=ads.next_num) }}">Сюда >></a></li>
+                      {% else %}
+                        <li class="disabled"><span>Сюда >></span></li>
+                      {% endif %}
+                      <!-- последняя страница -->
+                      {% if ads.page == ads.pages %}
+                        <li class="disabled"><span>В конец</span></li>
+                      {% else %}
+                        <li><a href="{{ url_for(request.endpoint, oblast_district=oblast_district, min_price=min_price, max_price=max_price, new_building=new_building, page=ads.pages) }}">В конец</a></li>
+                      {% endif %}
                     </ul>
                   </div>
                 </div>
+              {% endif %}
               </div>
             </div>
           </div>

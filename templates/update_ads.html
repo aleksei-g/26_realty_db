@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Обновление базы данных</title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <div class="col-xs-12 col-sm-4 col-md-4">
+            <form method="POST">
+                <br>
+                {% if error[0] == 'json' %}
+                <div class="has-error">
+                {% endif %}
+                    <div class="form-group">
+                    <label>Путь до файла в формате <b>JSON</b>:</label>
+                        <input name="json" class="form-control" value="{{ json }}"/>
+                    </div>
+                {% if error[0] == 'json' %}
+                </div>
+                {% endif %}
+                {% if error[0] == 'password' %}
+                <div class="has-error">
+                {% endif %}
+                    <div class="form-group">
+                    <label>Пароль:</label>
+                        <input type=password name="password" class="form-control" value="{{ password }}"/>
+                    </div>
+                {% if error[0] == 'password' %}
+                </div>
+                {% endif %}
+                <div class="form-group">
+                    <button  type="submit" class="btn btn-primary">Загрузить</button>
+                </div>
+            </form>
+        </div>
+        <div class="col-xs-12 col-sm-8 col-md-8"></div>
+    </div>
+    {% if error %}
+        <div class="row">
+            <div class="col-md-12">
+                <p class="text-danger">{{ error[1] }}</p>
+            </div>
+        </div>
+    {% endif %}
+</div>
+</body>
+</html>
