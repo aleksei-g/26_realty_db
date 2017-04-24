@@ -9,6 +9,7 @@ from datetime import datetime
 AGE_OF_BUILDINGS = 2
 ADS_PER_PAGE = 15
 app = Flask(__name__)
+app.jinja_env.add_extension('jinja2.ext.do')
 SQLALCHEMY_DATABASE_URI = os.getenv('SQLALCHEMY_DATABASE_URI')
 PASSWORD_FOR_UPDATE_DB = os.getenv('PASSWORD_FOR_UPDATE_DB')
 if not SQLALCHEMY_DATABASE_URI or not PASSWORD_FOR_UPDATE_DB:
@@ -16,7 +17,6 @@ if not SQLALCHEMY_DATABASE_URI or not PASSWORD_FOR_UPDATE_DB:
                     'should be specified')
 app.config['SQLALCHEMY_DATABASE_URI'] = SQLALCHEMY_DATABASE_URI
 from models import db, Ads
-db.create_all()
 
 
 def get_json(filepath):
@@ -105,4 +105,5 @@ def update_ads():
 
 
 if __name__ == "__main__":
+    db.create_all()
     app.run(host='0.0.0.0')

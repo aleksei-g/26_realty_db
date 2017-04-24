@@ -154,6 +154,7 @@
                   <hr>
                 {% endfor %}
               {% if ads.pages > 1 %}
+              {% set new_args = dict(request.args) %}
                 <div class="row">
                   <div class="col-md-12">
                     <ul class="pagination">
@@ -161,25 +162,29 @@
                       {% if ads.page == 1 %}
                         <li class="disabled"><span>В начало</span></li>
                       {% else %}
-                        <li><a href="{{ url_for(request.endpoint, oblast_district=oblast_district, min_price=min_price, max_price=max_price, new_building=new_building) }}">В начало</a></li>
+                          {% do new_args.update({'page': 1}) %}
+                          <li><a href="{{ url_for(request.endpoint, **new_args) }}">В начало</a></li>
                       {% endif  %}
                       <!-- предыдущая страница -->
                       {% if ads.has_prev %}
-                        <li><a href="{{ url_for(request.endpoint, oblast_district=oblast_district, min_price=min_price, max_price=max_price, new_building=new_building, page=ads.prev_num) }}"><< Туда</a></li>
+                        {% do new_args.update({'page': ads.prev_num}) %}
+                        <li><a href="{{ url_for(request.endpoint, **new_args) }}"><< Туда</a></li>
                       {% else %}
                         <li class="disabled"><span><< Туда</span></li>
                       {% endif  %}
                       <!-- страницы по порядку -->
-                      {% for p in range(1, ads.pages + 1) %}
-                          {% if p == ads.page %}
-                            <li class="active"><span>{{ p }}</span></li>
+                      {% for page in range(1, ads.pages + 1) %}
+                          {% if page == ads.page %}
+                            <li class="active"><span>{{ page }}</span></li>
                           {% else %}
-                            <li><a href="{{ url_for(request.endpoint, oblast_district=oblast_district, min_price=min_price, max_price=max_price, new_building=new_building, page=p) }}">{{ p }}</a></li>
+                            {% do new_args.update({'page': page}) %}
+                            <li><a href="{{ url_for(request.endpoint, **new_args) }}">{{ page }}</a></li>
                           {% endif %}
                       {% endfor %}
                       <!-- следующая страница -->
                       {% if ads.has_next %}
-                        <li><a href="{{ url_for(request.endpoint, oblast_district=oblast_district, min_price=min_price, max_price=max_price, new_building=new_building, page=ads.next_num) }}">Сюда >></a></li>
+                        {% do new_args.update({'page': ads.next_num}) %}
+                        <li><a href="{{ url_for(request.endpoint, **new_args) }}">Сюда >></a></li>
                       {% else %}
                         <li class="disabled"><span>Сюда >></span></li>
                       {% endif %}
@@ -187,7 +192,8 @@
                       {% if ads.page == ads.pages %}
                         <li class="disabled"><span>В конец</span></li>
                       {% else %}
-                        <li><a href="{{ url_for(request.endpoint, oblast_district=oblast_district, min_price=min_price, max_price=max_price, new_building=new_building, page=ads.pages) }}">В конец</a></li>
+                        {% do new_args.update({'page': ads.pages}) %}
+                        <li><a href="{{ url_for(request.endpoint, **new_args) }}">В конец</a></li>
                       {% endif %}
                     </ul>
                   </div>
