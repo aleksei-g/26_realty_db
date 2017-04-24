@@ -3,14 +3,18 @@ import requests
 import re
 import os
 import json
-import config
 from sqlalchemy import or_, and_
 from datetime import datetime
 
 AGE_OF_BUILDINGS = 2
 ADS_PER_PAGE = 15
 app = Flask(__name__)
-app.config.from_object('config')
+SQLALCHEMY_DATABASE_URI = os.getenv('SQLALCHEMY_DATABASE_URI')
+PASSWORD_FOR_UPDATE_DB = os.getenv('PASSWORD_FOR_UPDATE_DB')
+if not SQLALCHEMY_DATABASE_URI or not PASSWORD_FOR_UPDATE_DB:
+    raise Exception('SQLALCHEMY_DATABASE_URI and PASSWORD_FOR_UPDATE_DB '
+                    'should be specified')
+app.config['SQLALCHEMY_DATABASE_URI'] = SQLALCHEMY_DATABASE_URI
 from models import db, Ads
 db.create_all()
 
@@ -80,7 +84,7 @@ def ads_list():
 def update_ads():
     if request.method == 'POST':
         json_file_path = request.form.get('json')
-        if request.form.get('password') != config.password_for_update_db:
+        if request.form.get('password') != PASSWORD_FOR_UPDATE_DB:
             return render_template('update_ads.html',
                                    json=json_file_path,
                                    error=('password',
