@@ -83,19 +83,20 @@ def ads_list():
 @app.route('/update_ads/', methods=['GET', 'POST'])
 def update_ads():
     if request.method == 'POST':
-        json_file_path = request.form.get('json')
+        json_file_path = request.form.get('json_file')
         if request.form.get('password') != PASSWORD_FOR_UPDATE_DB:
             return render_template('update_ads.html',
-                                   json=json_file_path,
+                                   json_file=json_file_path,
                                    error=('password',
                                           'Error: incorrect password!'))
         json_data = get_json(json_file_path) if json_file_path else None
         if json_data is None:
             return render_template('update_ads.html',
-                                   json=json_file_path,
-                                   error=('json', 'Error: failed to retrieve '
-                                                  'data from {}'
-                                                  .format(json_file_path)))
+                                   json_file=json_file_path,
+                                   error=('json_file',
+                                          'Error: failed to retrieve '
+                                          'data from {}'
+                                          .format(json_file_path)))
         id_new_ads = [ad.get('id', None) for ad in json_data]
         make_inactive_old_ads(id_new_ads)
         load_data_into_ads(json_data)
